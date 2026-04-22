@@ -38,13 +38,14 @@ def generatepattern(a: int, b: int, ratioa: float, length: int, patternerror: fl
 def generategradient(a: int, b: int, size: int, offset: int, ratiostepsize: int, lowerbound: int, upperbound: int) -> str:
     ratios = getratioarray(ratiostepsize, lowerbound, upperbound)
     patterns = []
-    patternsize = size // len(ratios)
     patternerror = 1
-    log("Amount of layers per ratio: "+str(patternsize))
+    gradient_size = max(0, size - offset)
+    log("Amount of layers per ratio: "+str(gradient_size // len(ratios))+" (±1 to distribute remainder)")
     for _ in range(offset):
         patterns.append(str(a))
-    for ratio in ratios:
-        pattern, patternerror = generatepattern(a, b, ratio, patternsize, patternerror)
+    for i, ratio in enumerate(ratios):
+        layers = (i + 1) * gradient_size // len(ratios) - i * gradient_size // len(ratios)
+        pattern, patternerror = generatepattern(a, b, ratio, layers, patternerror)
         patterns.append(pattern)
     
     return "".join(patterns)
